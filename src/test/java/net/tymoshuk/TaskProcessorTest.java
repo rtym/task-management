@@ -69,9 +69,37 @@ public class TaskProcessorTest {
         Assertions.assertEquals(expectation, processor.process(tasks, 3));
     }
     
+    //This test validates the call with empty data
+    @Test
     void emptyCall() {
         final TaskProcessor processor = new TaskProcessor();
         
         Assertions.assertEquals(Collections.emptySet(), processor.process(Collections.emptyList(), 3));
+    }
+
+    //This test validates the call with tasks which takes longer then in provided time range
+    @Test
+    void callWithTasksOutOfRequiredRange() {
+        final Task task1 = new Task("T1", 10, 18);
+        final Task task2 = new Task("T2", 5, 5);
+
+        final List<Task> tasks = List.of(task1, task2);
+        final TaskProcessor processor = new TaskProcessor();
+
+        Assertions.assertEquals(Collections.emptySet(), processor.process(tasks, 3));
+    }
+
+    //This test validates the call with only one task within required time range
+    @Test
+    void callWithOnlyTaskInRequiredTimeRange() {
+        final Task task1 = new Task("T1", 10, 18);
+        final Task task2 = new Task("T2", 2, 5);
+
+        final List<Task> tasks = List.of(task1, task2);
+        final TaskProcessor processor = new TaskProcessor();
+
+        final Set<Task> expectation = Set.of(task2);
+
+        Assertions.assertEquals(expectation, processor.process(tasks, 3));
     }
 }

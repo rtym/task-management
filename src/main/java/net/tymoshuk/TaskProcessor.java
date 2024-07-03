@@ -1,21 +1,16 @@
 package net.tymoshuk;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 
 public class TaskProcessor {
     
     private final Stack<Task> taskStack = new Stack<>();
-
     private Set<Task> optimalTaskSet = new HashSet<>();
     
     private int currentValue = 0;
-    
     private int maxValue = 0;
     
-    public Set<Task> process(final List<Task> tasks, int time) {
+    public synchronized Set<Task> process(final List<Task> tasks, int time) {
         this.optimalTaskSet.clear();
         this.maxValue = 0;
         
@@ -24,10 +19,10 @@ public class TaskProcessor {
         
         processTasks(tasks, time);
         
-        return this.optimalTaskSet;
+        return  Collections.unmodifiableSet(this.optimalTaskSet);
     }
     
-    private synchronized void processTasks(final List<Task> tasks, int time) {
+    private void processTasks(final List<Task> tasks, int time) {
        for (int counter = 0; counter < tasks.size(); counter++) {
            final Task task = tasks.get(counter);
            
