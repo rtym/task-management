@@ -71,7 +71,7 @@ public class TaskProcessorTest {
     
     //This test validates the call with empty data
     @Test
-    void emptyCall() {
+    void testEmptyTaskCollection() {
         final TaskProcessor processor = new TaskProcessor();
         
         Assertions.assertEquals(Collections.emptySet(), processor.process(Collections.emptyList(), 3));
@@ -101,5 +101,56 @@ public class TaskProcessorTest {
         final Set<Task> expectation = Set.of(task2);
 
         Assertions.assertEquals(expectation, processor.process(tasks, 3));
+    }
+
+    @Test
+    public void testSingleTaskExceedsTime() {
+        final List<Task> tasks = List.of(new Task("T1", 15, 10));
+        final TaskProcessor processor = new TaskProcessor();
+        final Set<Task> result = processor.process(tasks, 10);
+        
+        Assertions.assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testAllTasksFitWithinTime() {
+        final Task task1 = new Task("T1", 1, 1);
+        final Task task2 = new Task("T2", 2, 2);
+        final Task task3 = new Task("T3", 3, 3);
+        
+        final List<Task> tasks = List.of(task1, task2, task3);
+        final TaskProcessor processor = new TaskProcessor();
+        final Set<Task> expectations = Set.of(task1, task2, task3); 
+
+        Assertions.assertEquals(expectations, processor.process(tasks, 6));
+    }
+
+    @Test
+    public void testTasksWithSameTimeDifferentValue() {
+        final Task task1 = new Task("T1", 2, 1);
+        final Task task2 = new Task("T2", 2, 2);
+        final Task task3 = new Task("T3", 2, 3);
+
+        final List<Task> tasks = List.of(task1, task2, task3);
+        final TaskProcessor processor = new TaskProcessor();
+        final Set<Task> expectations = Set.of(task2, task3);
+
+        Assertions.assertEquals(expectations, processor.process(tasks, 4));
+    }
+
+    // This is a tricky one as multiple combinations are possible
+    @Test
+    public void testNonObviousOptimalChoice() {
+        final Task task1 = new Task("T1", 2, 3);
+        final Task task2 = new Task("T2", 3, 4);
+        final Task task3 = new Task("T3", 4, 5);
+        final Task task4 = new Task("T4", 5, 8);
+        final Task task5 = new Task("T5", 1, 1);
+
+        final List<Task> tasks = List.of(task1, task2, task3, task4, task5);
+        final TaskProcessor processor = new TaskProcessor();
+        final Set<Task> expectations = Set.of(task1, task4, task5);
+
+        Assertions.assertEquals(expectations, processor.process(tasks, 8));
     }
 }
