@@ -9,6 +9,8 @@ public class TaskProcessor {
     
     private int currentValue = 0;
     private int maxValue = 0;
+
+    private int test = 0;
     
     public synchronized Set<Task> process(final List<Task> tasks, int time) {
         this.optimalTaskSet.clear();
